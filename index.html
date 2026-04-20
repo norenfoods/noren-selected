@@ -1,868 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Noren Selected · 暖帘甄选</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --green: #1A3520;
-    --green-mid: #2D4A35;
-    --green-light: #3D5E45;
-    --gold: #C9A84C;
-    --gold-light: #E8C96A;
-    --gold-dim: #8A6E2F;
-    --cream: #F5F0E8;
-    --cream-mid: #E8E0D0;
-    --cream-dark: #B8AF98;
-    --white: #FAFAF5;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--green);
-    color: var(--cream);
-    font-family: 'Jost', sans-serif;
-    font-weight: 300;
-    overflow-x: hidden;
-  }
-
-  /* ── NOISE TEXTURE OVERLAY ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.4;
-  }
-
-  /* ── HERO ── */
-  .hero {
-    min-height: 100vh;
-    padding-top: 100px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    padding: 80px 40px;
-    text-align: center;
-    overflow: hidden;
-  }
-
-  .hero::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 1px;
-    height: 80px;
-    background: linear-gradient(to bottom, var(--gold-dim), transparent);
-  }
-
-  /* Noren curtain SVG decoration */
-  .noren-icon {
-    width: 96px;
-    height: auto;
-    margin-bottom: 40px;
-    opacity: 0.92;
-    mix-blend-mode: lighten;
-    animation: fadeDown 1.2s ease both;
-  }
-
-  .hero-eyebrow {
-    font-family: 'Jost', sans-serif;
-    font-weight: 200;
-    font-size: 11px;
-    letter-spacing: 0.35em;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 28px;
-    animation: fadeUp 1s ease 0.2s both;
-  }
-
-  .hero-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 300;
-    font-size: clamp(64px, 10vw, 120px);
-    line-height: 0.9;
-    color: var(--cream);
-    letter-spacing: -0.02em;
-    margin-bottom: 8px;
-    animation: fadeUp 1s ease 0.3s both;
-  }
-
-  .hero-title em {
-    font-style: italic;
-    color: var(--gold-light);
-  }
-
-  .hero-subtitle-cn {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 300;
-    color: var(--cream-dark);
-    letter-spacing: 0.25em;
-    margin-bottom: 48px;
-    animation: fadeUp 1s ease 0.4s both;
-  }
-
-  .hero-rule {
-    width: 180px;
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--gold-dim), transparent);
-    margin: 0 auto 40px;
-    animation: fadeUp 1s ease 0.45s both;
-  }
-
-  .hero-desc {
-    font-size: 16px;
-    line-height: 1.9;
-    color: var(--cream-dark);
-    max-width: 520px;
-    font-weight: 300;
-    animation: fadeUp 1s ease 0.5s both;
-  }
-
-  .hero-desc strong {
-    color: var(--cream);
-    font-weight: 400;
-  }
-
-  /* ── CREDENTIALS STRIP ── */
-  .credentials {
-    background: var(--green-mid);
-    border-top: 1px solid rgba(201,168,76,0.2);
-    border-bottom: 1px solid rgba(201,168,76,0.2);
-    padding: 32px 40px;
-    display: flex;
-    justify-content: center;
-    gap: 80px;
-    flex-wrap: wrap;
-  }
-
-  .credential-item {
-    text-align: center;
-  }
-
-  .credential-label {
-    font-size: 10px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--gold-dim);
-    margin-bottom: 6px;
-  }
-
-  .credential-value {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 400;
-    color: var(--gold-light);
-  }
-
-  /* ── SECTIONS ── */
-  section {
-    padding: 120px 40px;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .section-label {
-    font-size: 10px;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--gold-dim);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .section-label::before {
-    content: '';
-    display: block;
-    width: 32px;
-    height: 1px;
-    background: var(--gold-dim);
-  }
-
-  .section-heading {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(38px, 5vw, 58px);
-    font-weight: 300;
-    line-height: 1.1;
-    color: var(--cream);
-    margin-bottom: 24px;
-  }
-
-  .section-heading em {
-    font-style: italic;
-    color: var(--gold-light);
-  }
-
-  .section-body {
-    font-size: 16px;
-    line-height: 1.9;
-    color: var(--cream-dark);
-    max-width: 620px;
-  }
-
-  /* ── WHO WE ARE ── */
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: start;
-    margin-top: 80px;
-  }
-
-  .about-stat {
-    border-top: 1px solid rgba(201,168,76,0.25);
-    padding-top: 24px;
-    margin-bottom: 40px;
-  }
-
-  .about-stat-number {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 52px;
-    font-weight: 300;
-    color: var(--gold-light);
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-
-  .about-stat-label {
-    font-size: 12px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--cream-dark);
-  }
-
-  /* ── WHAT IS NOREN SELECTED ── */
-  .what-section {
-    background: var(--green-mid);
-    border-top: 1px solid rgba(201,168,76,0.15);
-    border-bottom: 1px solid rgba(201,168,76,0.15);
-    padding: 120px 40px;
-  }
-
-  .what-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .pillars {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    margin-top: 80px;
-  }
-
-  .pillar {
-    background: rgba(15, 42, 18, 0.6);
-    padding: 48px 36px;
-    position: relative;
-    transition: background 0.3s ease;
-  }
-
-  .pillar:hover {
-    background: rgba(15, 42, 18, 0.9);
-  }
-
-  .pillar-number {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 72px;
-    font-weight: 300;
-    color: rgba(201,168,76,0.15);
-    line-height: 1;
-    margin-bottom: 24px;
-  }
-
-  .pillar-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 24px;
-    font-weight: 400;
-    color: var(--gold-light);
-    margin-bottom: 16px;
-  }
-
-  .pillar-body {
-    font-size: 14px;
-    line-height: 1.8;
-    color: var(--cream-dark);
-  }
-
-  /* ── CRITERIA ── */
-  .criteria-list {
-    margin-top: 60px;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .criteria-item {
-    display: grid;
-    grid-template-columns: 48px 1fr;
-    gap: 32px;
-    align-items: start;
-    padding: 32px 0;
-    border-bottom: 1px solid rgba(201,168,76,0.12);
-  }
-
-  .criteria-item:first-child {
-    border-top: 1px solid rgba(201,168,76,0.12);
-  }
-
-  .criteria-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 36px;
-    font-weight: 300;
-    color: rgba(201,168,76,0.4);
-    line-height: 1;
-    padding-top: 4px;
-  }
-
-  .criteria-content-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 400;
-    color: var(--cream);
-    margin-bottom: 8px;
-  }
-
-  .criteria-content-body {
-    font-size: 14px;
-    line-height: 1.8;
-    color: var(--cream-dark);
-  }
-
-  /* ── WHAT YOU GET ── */
-  .benefits-section {
-    background: var(--green-mid);
-    border-top: 1px solid rgba(201,168,76,0.15);
-    border-bottom: 1px solid rgba(201,168,76,0.15);
-    padding: 120px 40px;
-  }
-
-  .benefits-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .benefits-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 48px;
-    margin-top: 80px;
-  }
-
-  .benefit-card {
-    display: flex;
-    gap: 24px;
-    align-items: flex-start;
-  }
-
-  .benefit-icon {
-    width: 40px;
-    height: 40px;
-    flex-shrink: 0;
-    border: 1px solid rgba(201,168,76,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 4px;
-  }
-
-  .benefit-icon svg {
-    width: 18px;
-    height: 18px;
-    stroke: var(--gold);
-    fill: none;
-    stroke-width: 1.5;
-  }
-
-  .benefit-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 20px;
-    font-weight: 400;
-    color: var(--cream);
-    margin-bottom: 8px;
-  }
-
-  .benefit-body {
-    font-size: 14px;
-    line-height: 1.8;
-    color: var(--cream-dark);
-  }
-
-  /* ── CTA ── */
-  .cta-section {
-    text-align: center;
-    padding: 160px 40px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cta-section::before {
-    content: 'NOREN';
-    position: absolute;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 280px;
-    font-weight: 300;
-    color: rgba(201,168,76,0.04);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    white-space: nowrap;
-    pointer-events: none;
-    letter-spacing: -0.05em;
-  }
-
-  .cta-inner {
-    position: relative;
-    z-index: 1;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  .cta-heading {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(42px, 6vw, 72px);
-    font-weight: 300;
-    line-height: 1.1;
-    color: var(--cream);
-    margin-bottom: 24px;
-  }
-
-  .cta-heading em {
-    font-style: italic;
-    color: var(--gold-light);
-  }
-
-  .cta-body {
-    font-size: 16px;
-    line-height: 1.9;
-    color: var(--cream-dark);
-    margin-bottom: 56px;
-  }
-
-  .cta-button {
-    display: inline-block;
-    padding: 18px 56px;
-    border: 1px solid var(--gold);
-    color: var(--gold-light);
-    font-family: 'Jost', sans-serif;
-    font-size: 12px;
-    font-weight: 300;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cta-button::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--gold);
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    z-index: -1;
-  }
-
-  .cta-button:hover {
-    color: var(--green);
-  }
-
-  .cta-button:hover::before {
-    transform: translateX(0);
-  }
-
-  .cta-email {
-    display: block;
-    margin-top: 32px;
-    font-size: 13px;
-    color: var(--gold-dim);
-    letter-spacing: 0.1em;
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    border-top: 1px solid rgba(201,168,76,0.15);
-    padding: 48px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .footer-brand {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    font-weight: 300;
-    color: var(--cream-dark);
-  }
-
-  .footer-brand span {
-    color: var(--gold-dim);
-    font-size: 13px;
-    display: block;
-    letter-spacing: 0.15em;
-    margin-top: 4px;
-    font-family: 'Jost', sans-serif;
-    font-weight: 200;
-  }
-
-  .footer-copy {
-    font-size: 12px;
-    color: var(--gold-dim);
-    letter-spacing: 0.1em;
-  }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* scroll reveal */
-  .reveal {
-    opacity: 0;
-    transform: translateY(32px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 768px) {
-    .about-grid { grid-template-columns: 1fr; gap: 40px; }
-    .pillars { grid-template-columns: 1fr; }
-    .benefits-grid { grid-template-columns: 1fr; }
-    .credentials { gap: 40px; }
-    footer { flex-direction: column; gap: 24px; text-align: center; }
-  }
-</style>
-</head>
-<body>
-
-<!-- NAV -->
-<nav style="position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(to bottom, rgba(15,42,18,0.95), transparent); backdrop-filter: blur(4px);">
-  <img src="noren_wordmark.png" alt="暖帘 Noren" style="height: 36px; object-fit: contain; opacity: 0.85;">
-  <a href="mailto:info@norenfoods.com" style="font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); text-decoration: none; border: 1px solid rgba(201,168,76,0.4); padding: 8px 20px; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(201,168,76,0.1)'" onmouseout="this.style.background='transparent'">Apply Now</a>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <!-- Noren logo -->
-  <img src="noren_curtain_gold.png" alt="Noren" class="noren-icon">
-
-  <p class="hero-eyebrow">Introducing</p>
-  <h1 class="hero-title">Noren <em>Selected</em></h1>
-  <p class="hero-subtitle-cn">暖帘甄选</p>
-  <div class="hero-rule"></div>
-  <p class="hero-desc">
-    A curated alliance of the world's finest extra virgin olive oils,<br>
-    brought to <strong>China's premium market</strong> by Norenfoods —<br>
-    <strong>Flos Olei 2025 Importer of the Year.</strong>
-  </p>
-</section>
-
-<!-- CREDENTIALS -->
-<div class="credentials">
-  <div class="credential-item">
-    <div class="credential-label">Recognition</div>
-    <div class="credential-value">Flos Olei 2025 Importer of the Year</div>
-  </div>
-  <div class="credential-item">
-    <div class="credential-label">China Channels</div>
-    <div class="credential-value">20+ Premium Retail Partners</div>
-  </div>
-  <div class="credential-item">
-    <div class="credential-label">Certified Producers</div>
-    <div class="credential-value">433 GACC-Registered Olive Oil Brands</div>
-  </div>
-  <div class="credential-item">
-    <div class="credential-label">Market Data</div>
-    <div class="credential-value">$132M China EVOO Import (2025)</div>
-  </div>
-</div>
-
-<!-- WHO WE ARE -->
-<section>
-  <div class="section-label">Who We Are</div>
-  <h2 class="section-heading">China's most<br><em>trusted olive oil importer</em></h2>
-  <p class="section-body">
-    Norenfoods is a Shanghai-based premium olive oil importer with deep expertise in the Chinese market and a hands-on approach to every producer relationship we build.
-  </p>
-
-  <div class="about-grid reveal">
-    <div>
-      <div class="about-stat">
-        <div class="about-stat-number">2025</div>
-        <div class="about-stat-label">Flos Olei Importer of the Year</div>
-      </div>
-      <div class="about-stat">
-        <div class="about-stat-number">20+</div>
-        <div class="about-stat-label">Premium retail channels in China</div>
-      </div>
-      <div class="about-stat">
-        <div class="about-stat-number">$132M</div>
-        <div class="about-stat-label">China EVOO import market (2025)</div>
-      </div>
-    </div>
-    <div>
-      <p class="section-body" style="margin-bottom: 24px;">
-        We built <strong style="color:var(--cream)">OlioSource</strong> — the world's most comprehensive database of GACC-registered olive oil producers, cross-referenced with Flos Olei, NYIOOC and Gambero Rosso award data.
-      </p>
-      <p class="section-body">
-        We know the Chinese market from the inside. We know which products move, which stories resonate, and how to build lasting brand equity in a market that rewards authenticity.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- CHANNELS -->
-<div style="background: rgba(255,255,255,0.03); border-top: 1px solid rgba(201,168,76,0.15); border-bottom: 1px solid rgba(201,168,76,0.15); padding: 56px 40px; text-align: center;">
-  <p style="font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold-dim); margin-bottom: 40px;">Our Products Are Available At</p>
-  <div style="display: flex; justify-content: center; align-items: center; gap: 48px; flex-wrap: wrap;">
-    <div style="display: flex; align-items: center; justify-content: center; min-width: 150px; height: 70px;">
-      <img src="logo_ole.png" alt="OLE" style="max-width: 120px; max-height: 46px; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.55;">
-    </div>
-    <div style="display: flex; align-items: center; justify-content: center; min-width: 150px; height: 70px;">
-      <img src="logo_citysuper.png" alt="city'super" style="max-width: 120px; max-height: 46px; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.55;">
-    </div>
-    <div style="display: flex; align-items: center; justify-content: center; min-width: 150px; height: 70px;">
-      <img src="logo_bhg.jpg" alt="BHG Market Place" style="max-width: 120px; max-height: 46px; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.55;">
-    </div>
-    <div style="display: flex; align-items: center; justify-content: center; min-width: 150px; height: 70px;">
-      <img src="logo_granvida.png" alt="Gran Vida · Hisense Plaza" style="max-width: 120px; max-height: 46px; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.55;">
-    </div>
-  </div>
-</div>
-
-<!-- WHAT IS NOREN SELECTED -->
-<div class="what-section">
-  <div class="what-inner">
-    <div class="section-label">The Alliance</div>
-    <h2 class="section-heading">What is<br><em>Noren Selected</em>?</h2>
-    <p class="section-body">
-      Noren Selected is a curated collective of the world's finest extra virgin olive oils — handpicked by Norenfoods to enter China together, with full market support at every step.
-    </p>
-
-    <div class="pillars reveal">
-      <div class="pillar">
-        <div class="pillar-number">01</div>
-        <div class="pillar-title">Curated Entry</div>
-        <div class="pillar-body">Every member passes our rigorous selection standard — combining international award records, GACC compliance, and production quality. Not all producers qualify. That exclusivity is the point.</div>
-      </div>
-      <div class="pillar">
-        <div class="pillar-number">02</div>
-        <div class="pillar-title">China Localization</div>
-        <div class="pillar-body">Via our BrandBank service, selected producers receive a complete Chinese market identity — brand naming, website, label compliance, social media presence — so Chinese buyers find you immediately credible.</div>
-      </div>
-      <div class="pillar">
-        <div class="pillar-number">03</div>
-        <div class="pillar-title">Market Access</div>
-        <div class="pillar-body">Members gain access to Norenfoods' existing premium retail network, joint exhibition opportunities at SIAL China and FHC Shanghai, and a dedicated channel via our curated shelf program.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SELECTION CRITERIA -->
-<section>
-  <div class="section-label">Selection Criteria</div>
-  <h2 class="section-heading">What it takes<br>to <em>join the alliance</em></h2>
-  <p class="section-body">We set the bar high — because the Noren Selected mark must mean something to every Chinese buyer who sees it.</p>
-
-  <div class="criteria-list reveal">
-    <div class="criteria-item">
-      <div class="criteria-num">I</div>
-      <div>
-        <div class="criteria-content-title">International Award Recognition</div>
-        <div class="criteria-content-body">Verified recognition in Flos Olei, NYIOOC World Olive Oil Competition, or Gambero Rosso. We weight consistency across multiple years and categories. One-time wins count; multi-year excellence counts more.</div>
-      </div>
-    </div>
-    <div class="criteria-item">
-      <div class="criteria-num">II</div>
-      <div>
-        <div class="criteria-content-title">GACC Registration</div>
-        <div class="criteria-content-body">Valid registration with China's General Administration of Customs (GACC) as an overseas food manufacturer — or actively in the registration process. Not registered yet? We can guide you through the process.</div>
-      </div>
-    </div>
-    <div class="criteria-item">
-      <div class="criteria-num">III</div>
-      <div>
-        <div class="criteria-content-title">China Market Readiness</div>
-        <div class="criteria-content-body">Completion of BrandBank localization — Chinese brand identity, compliant labeling, and a credible digital presence for Chinese buyers. This is what transforms great oil into a great Chinese brand.</div>
-      </div>
-    </div>
-    <div class="criteria-item">
-      <div class="criteria-num">IV</div>
-      <div>
-        <div class="criteria-content-title">Partnership Alignment</div>
-        <div class="criteria-content-body">Willingness to work with Norenfoods as your dedicated China market partner. We provide end-to-end services — from import compliance and localization to channel placement and brand building — so you can focus on making great oil.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- WHAT YOU GET -->
-<div class="benefits-section">
-  <div class="benefits-inner">
-    <div class="section-label">Member Benefits</div>
-    <h2 class="section-heading">What members<br><em>receive</em></h2>
-    <p class="section-body">Membership is not passive. We actively invest in every Noren Selected producer's China story.</p>
-
-    <div class="benefits-grid reveal">
-      <div class="benefit-card">
-        <div class="benefit-icon">
-          <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
-        </div>
-        <div>
-          <div class="benefit-title">Noren Selected Certification</div>
-          <div class="benefit-body">Your brand carries the Noren Selected mark — a signal of quality recognized by Chinese premium buyers, supermarket buyers, and food service professionals.</div>
-        </div>
-      </div>
-
-      <div class="benefit-card">
-        <div class="benefit-icon">
-          <svg viewBox="0 0 24 24"><path d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
-        </div>
-        <div>
-          <div class="benefit-title">OlioSource Profile</div>
-          <div class="benefit-body">A verified, bilingual supplier profile on OlioSource — the platform used by Chinese importers and buyers to discover and evaluate international EVOO producers.</div>
-        </div>
-      </div>
-
-      <div class="benefit-card">
-        <div class="benefit-icon">
-          <svg viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-        </div>
-        <div>
-          <div class="benefit-title">Premium Retail Access</div>
-          <div class="benefit-body">Introduction to Norenfoods' network of 20+ premium retail partners across Shanghai and key Chinese cities. Channel agreements to be discussed individually based on product fit.</div>
-        </div>
-      </div>
-
-      <div class="benefit-card">
-        <div class="benefit-icon">
-          <svg viewBox="0 0 24 24"><path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        </div>
-        <div>
-          <div class="benefit-title">China Localization (BrandBank)</div>
-          <div class="benefit-body">Full Chinese brand identity package — Chinese name, website, GB 7718-compliant label design, and a Xiaohongshu (RED) presence built specifically for Chinese consumers.</div>
-        </div>
-      </div>
-
-      <div class="benefit-card">
-        <div class="benefit-icon">
-          <svg viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-        </div>
-        <div>
-          <div class="benefit-title">Joint Exhibition</div>
-          <div class="benefit-body">Representation at SIAL China (May, Shanghai) and FHC Shanghai (November) under the Noren Selected collective banner — shared costs, maximum visibility.</div>
-        </div>
-      </div>
-
-      <div class="benefit-card">
-        <div class="benefit-icon">
-          <svg viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-        </div>
-        <div>
-          <div class="benefit-title">Market Intelligence</div>
-          <div class="benefit-body">Access to Norenfoods' proprietary China market data — import volumes by province, price benchmarks, buyer behavior insights — updated quarterly.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- PHOTO GALLERY -->
-<div style="padding: 100px 40px; max-width: 1100px; margin: 0 auto;">
-  <div class="section-label reveal">On The Ground</div>
-  <h2 class="section-heading reveal">Norenfoods <em>in action</em></h2>
-  <p class="section-body reveal" style="margin-bottom: 64px;">From international trade shows to premium retail floors across China — this is where the work happens.</p>
-
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;" class="reveal">
-    <!-- Large left -->
-    <div style="grid-row: span 2; overflow: hidden; aspect-ratio: 3/4;">
-      <img src="photo_expo.jpg" alt="Norenfoods at SOL²EXPO" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
-    </div>
-    <!-- Top right -->
-    <div style="overflow: hidden; aspect-ratio: 4/3;">
-      <img src="photo_shelf.jpg" alt="Premium shelf at city'super" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
-    </div>
-    <!-- Bottom right -->
-    <div style="overflow: hidden; aspect-ratio: 4/3;">
-      <img src="photo_display.jpg" alt="Italian Food Week display" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
-    </div>
-  </div>
-
-  <!-- Bottom row -->
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;" class="reveal">
-    <div style="overflow: hidden;">
-      <img src="photo_chef.jpg" alt="Chef masterclass event" style="width: 100%; height: auto; display: block; transition: transform 0.6s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
-    </div>
-    <div style="overflow: hidden;">
-      <img src="photo_products.jpg" alt="Award-winning EVOO products" style="width: 100%; height: auto; display: block; transition: transform 0.6s ease;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
-    </div>
-  </div>
-</div>
-
-<!-- CTA -->
-<section class="cta-section">
-  <div class="cta-inner">
-    <div class="section-label" style="justify-content:center">Apply for Membership</div>
-    <h2 class="cta-heading">Ready to enter<br><em>China's finest tables?</em></h2>
-    <p class="cta-body">
-      We are currently accepting applications from a select group of producers for the inaugural Noren Selected cohort. If your oil belongs among the world's best — and you're ready to prove it in China's most discerning market — we want to hear from you.
-    </p>
-    <a href="mailto:info@norenfoods.com" class="cta-button">Express Interest</a>
-    <span class="cta-email">info@norenfoods.com</span>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-brand">
-    <img src="noren_wordmark.png" alt="暖帘 Noren" style="height: 28px; object-fit: contain; opacity: 0.7; margin-bottom: 8px; display: block;">
-    <span>Norenfoods Technology Co., Ltd · Shanghai</span>
-  </div>
-  <div class="footer-copy">© 2025 Norenfoods · OlioSource · BrandBank</div>
-</footer>
-
-<script>
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(el => {
-      if (el.isIntersecting) {
-        el.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1 });
-  reveals.forEach(el => observer.observe(el));
-</script>
-
-</body>
-</html>
+￼
+APPLY NOW
+￼
+INTRODUCING
+Noren Selected
+暖帘甄选
+
+A curated alliance of the world's finest extra virgin olive oils, brought to China's premium market by Norenfoods — Flos Olei 2025 Importer of the Year.
+RECOGNITION
+Flos Olei 2025 Importer of the Year
+CHINA CHANNELS
+20+ Premium Retail Partners
+CERTIFIED PRODUCERS
+433 GACC-Registered Olive Oil Brands
+MARKET DATA
+$132M China EVOO Import (2025)
+WHO WE ARE
+China's most trusted olive oil importer
+Norenfoods is a Shanghai-based premium olive oil importer with deep expertise in the Chinese market and a hands-on approach to every producer relationship we build.
+2025
+FLOS OLEI IMPORTER OF THE YEAR
+20+
+PREMIUM RETAIL CHANNELS IN CHINA
+$132M
+CHINA EVOO IMPORT MARKET (2025)
+We built OlioSource — the world's most comprehensive database of GACC-registered olive oil producers, cross-referenced with Flos Olei, NYIOOC and Gambero Rosso award data.
+We know the Chinese market from the inside. We know which products move, which stories resonate, and how to build lasting brand equity in a market that rewards authenticity.
+OUR PRODUCTS ARE AVAILABLE AT
+￼
+￼
+￼
+￼
+THE ALLIANCE
+What is Noren Selected?
+Noren Selected is a curated collective of the world's finest extra virgin olive oils — handpicked by Norenfoods to enter China together, with full market support at every step.
+01
+Curated Entry
+Every member passes our rigorous selection standard — combining international award records, GACC compliance, and production quality. Not all producers qualify. That exclusivity is the point.
+02
+China Localization
+Via our BrandBank service, selected producers receive a complete Chinese market identity — brand naming, website, label compliance, social media presence — so Chinese buyers find you immediately credible.
+03
+Market Access
+Members gain access to Norenfoods' existing premium retail network, joint exhibition opportunities at SIAL China and FHC Shanghai, and a dedicated channel via our curated shelf program.
+SELECTION CRITERIA
+What it takes to join the alliance
+We set the bar high — because the Noren Selected mark must mean something to every Chinese buyer who sees it.
+I
+International Award Recognition
+Verified recognition in Flos Olei, NYIOOC World Olive Oil Competition, or Gambero Rosso. We weight consistency across multiple years and categories. One-time wins count; multi-year excellence counts more.
+II
+GACC Registration
+Valid registration with China's General Administration of Customs (GACC) as an overseas food manufacturer — or actively in the registration process. Not registered yet? We can guide you through the process.
+III
+China Market Readiness
+Completion of BrandBank localization — Chinese brand identity, compliant labeling, and a credible digital presence for Chinese buyers. This is what transforms great oil into a great Chinese brand.
+IV
+Partnership Alignment
+Willingness to work with Norenfoods as your dedicated China market partner. We provide end-to-end services — from import compliance and localization to channel placement and brand building — so you can focus on making great oil.
+MEMBER BENEFITS
+What members receive
+Membership is not passive. We actively invest in every Noren Selected producer's China story.
+
+Noren Selected Certification
+Your brand carries the Noren Selected mark — a signal of quality recognized by Chinese premium buyers, supermarket buyers, and food service professionals.
+
+OlioSource Profile
+A verified, bilingual supplier profile on OlioSource — the platform used by Chinese importers and buyers to discover and evaluate international EVOO producers.
+
+Premium Retail Access
+Introduction to Norenfoods' network of 20+ premium retail partners across Shanghai and key Chinese cities. Channel agreements to be discussed individually based on product fit.
+
+China Localization (BrandBank)
+Full Chinese brand identity package — Chinese name, website, GB 7718-compliant label design, and a Xiaohongshu (RED) presence built specifically for Chinese consumers.
+
+Joint Exhibition
+Representation at SIAL China (May, Shanghai) and FHC Shanghai (November) under the Noren Selected collective banner — shared costs, maximum visibility.
+
+Market Intelligence
+Access to Norenfoods' proprietary China market data — import volumes by province, price benchmarks, buyer behavior insights — updated quarterly.
+ON THE GROUND
+Norenfoods in action
+From international trade shows to premium retail floors across China — this is where the work happens.
+￼
+￼
+￼
+￼
+￼
+APPLY FOR MEMBERSHIP
+Ready to enter China's finest tables?
+We are currently accepting applications from a select group of producers for the inaugural Noren Selected cohort. If your oil belongs among the world's best — and you're ready to prove it in China's most discerning market — we want to hear from you.
+EXPRESS INTEREST
+info@norenfoods.com
+￼
+Norenfoods Technology Co., Ltd · Shanghai
+© 2026 Norenfoods · OlioSource · BrandBank
